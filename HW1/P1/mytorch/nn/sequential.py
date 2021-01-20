@@ -47,7 +47,6 @@ class Sequential(Module):
         Returns:
             Tensor: Output after passing through layers
         """
-        # loop througha self.layers...
 
         output = x
         for l in self.layers:
