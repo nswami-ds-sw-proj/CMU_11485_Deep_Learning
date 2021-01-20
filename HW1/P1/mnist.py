@@ -27,12 +27,10 @@ def mnist(train_x, train_y, val_x, val_y):
         val_accuracies (list(float)): List of accuracies per validation round
                                       (num_epochs,)
     """
-    # TODO: Initialize an MLP, optimizer, and criterion
     model = Sequential(Linear(784, 20), ReLU(), Linear(20, 10))
     optimizer = SGD(model.parameters(), lr=0.1)
     criterion = CrossEntropyLoss()
 
-    # TODO: Call training routine (make sure to write it below)
     val_accuracies = train(model, optimizer, criterion, train_x, train_y, val_x, val_y)
     return val_accuracies
 
@@ -53,8 +51,6 @@ def train(model, optimizer, criterion, train_x, train_y, val_x, val_y, num_epoch
     model.train()
     val_accuracies = []
 
-    # TODO: Implement me! (Pseudocode on writeup)
-    # print(train_x[0][0], train_y[0])
     for e in range(num_epochs):
         train_y = train_y[None]
 
@@ -66,14 +62,8 @@ def train(model, optimizer, criterion, train_x, train_y, val_x, val_y, num_epoch
         x_batches, target_batches = batches(train_x, train_y)
         assert(len(x_batches) == len(target_batches))
         for i in range(len(x_batches)):
-            # print(x_batches[i][0][0])
-            # print(target_batches[i][0])
-            # assert(False)
             optimizer.zero_grad()
             output = model.forward(Tensor(x_batches[i]))
-            # print(output.shape)
-            # assert(False)
-            # print(target_batches[i].shape)
             loss = criterion.forward(output, Tensor(target_batches[i]))
             print(loss)
             loss.backward()
@@ -112,7 +102,6 @@ def validate(model, val_x, val_y):
     Returns:
         float: Accuracy = correct / total
     """
-    # TODO: implement validation based on pseudocode
     model.eval()
     x_batches, target_batches = batches(val_x, val_y)
     num_correct = 0
