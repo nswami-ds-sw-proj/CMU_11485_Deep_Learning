@@ -46,5 +46,4 @@ class Linear(Module):
         """
 
         output = x@(self.weight.T()) + self.bias
-        # assert(False)
         return output
