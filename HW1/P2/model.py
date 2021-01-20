@@ -10,7 +10,6 @@ test = np.load('test.npy', allow_pickle=True)
 
 cuda = True
 
-context = 2
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
@@ -44,8 +43,6 @@ def pre_processing(input, context, labels=None):
 
 
 def train(train_data, train_labels, context=0, eval=False, dev_data=None, dev_labels=None, num_epochs=10, batch_size=512, lr=5e-4):
-    # print("INSIDE FUNCTION")
-    # print(train_data)
     train_data, train_labels = pre_processing(train_data, context, labels=train_labels)
     train_data, train_labels = torch.from_numpy(train_data), torch.from_numpy(train_labels)
     train_dataset = MyDataset(train_data, train_labels, context)
@@ -65,19 +62,16 @@ def train(train_data, train_labels, context=0, eval=False, dev_data=None, dev_la
                           nn.Linear(1024, 346, bias=True)).to(device)
 
     model.to(device)
-    # print("NEW")
 
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=5e-4)
-    # scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-    #     optimizer=optimizer)
     for epoch in range(num_epochs):
 
         model.train()
         size = torch.tensor(len(train_dataset)).float()
         train_count = torch.tensor(0).float()
         num = 0
-        print("##################EPOCH = {}".format(epoch))
+        print("####### EPOCH = {} #######".format(epoch))
         print(len(train_loader))
 
         for (x, y) in train_loader:
@@ -90,8 +84,6 @@ def train(train_data, train_labels, context=0, eval=False, dev_data=None, dev_la
             loss = criterion(output, y)
             num += 1
             score = torch.eq(torch.argmax(output, dim=1), y).sum().float()
-            # print("epoch", epoch, loss, (num)/len(train_loader),
-            #       torch.eq(torch.argmax(output, dim=1), y).sum())
             train_count = train_count + score
 
             loss.backward()
@@ -121,9 +113,7 @@ def train(train_data, train_labels, context=0, eval=False, dev_data=None, dev_la
 
                 output = torch.argmax(model(x), dim=1)
 
-                # print(output)
                 score = torch.eq(output, y).sum().float()
-                # print(score)
                 n_correct = n_correct + score
 
             print(n_correct)
