@@ -24,19 +24,15 @@ class CNN(Module):
         first_input_size = 60  # The width of the input to the first convolutional layer
         first_in_channel = 24  # The number of channels input into the first layer
 
-        # TODO: initialize all layers EXCEPT the last linear layer
         layers = [Conv1d(first_in_channel, 56, 5, 1), Tanh(),
                   Conv1d(56, 28, 6, 2), ReLU(),
                   Conv1d(28, 14, 2, 2), Sigmoid(), Flatten(),
                   # ... etc ... put layers in here, comma separate
                   ]
 
-        # TODO: Iterate through the conv layers and calculate the final output size
         output_size = get_final_conv_output_size(layers, first_input_size)
 
-        # TODO: Append the linear layer with the correct size onto `layers`
         layers.append(Linear(output_size*14, 10))
-        # TODO: Put the layers into a Sequential
         self.layers = Sequential(*layers)
 
     def forward(self, x):
@@ -46,7 +42,6 @@ class CNN(Module):
         Return:
             out (np.array): (batch_size, out_feature)
         """
-        # Already completed for you. Passes data through all layers in order.
         return self.layers(x)
 
 
@@ -68,7 +63,6 @@ def get_final_conv_output_size(layers, input_size):
         layers (list(Module)): List of Conv1d layers, activations, and flatten layers
         input_size (int): input_size of x, the input data
     """
-    # Hint, you may find the function `isinstance()` to be useful.
     begin = True
     for l in layers:
         if not isinstance(l, Conv1d):
