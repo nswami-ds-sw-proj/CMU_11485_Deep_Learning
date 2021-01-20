@@ -53,12 +53,9 @@ class Function:
         # Run subclass's forward with context manager and operation input args
         output_tensor = cls.forward(backward_function.ctx, *args)
 
-        # TODO: Complete code below
         # 1) For each parent tensor in args, add their node to `backward_function.next_functions`
-        #    Note: Parents may/may not already have their own nodes. How do we handle this?
-        #    Note: Parents may not need to be connected to the comp graph. How do we handle this?
-        #    (see Appendix A.1 for hints)
-
+        #    Note: Parents may/may not already have their own nodes. 
+        #    Note: Parents may not need to be connected to the comp graph.
         for arg in args:
 
             if not isinstance(arg, tensor.Tensor):
@@ -75,13 +72,10 @@ class Function:
                     assert(not arg.requires_grad)
                     backward_function.next_functions.append(None)
             else:
-                # May be Dead Code
                 assert(not arg.is_leaf)
-                # assert(arg.requires_grad)
                 backward_function.next_functions.append(BackwardFunction(arg.cls))
 
         # 2) Store current node in output tensor (see `tensor.py` for ideas)
-        # TODO: Write code here
         output_tensor.grad_fn = backward_function
 
         return output_tensor
