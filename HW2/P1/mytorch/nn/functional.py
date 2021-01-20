@@ -302,13 +302,6 @@ def cross_entropy(predicted, target):
     """
     batch_size, num_classes = predicted.shape
 
-    # Tip: You can implement XELoss all here, without creating a new subclass of Function.
-    #      However, if you'd prefer to implement a Function subclass you're free to.
-    #      Just be sure that nn.loss.CrossEntropyLoss calls it properly.
-
-    # Tip 2: Remember to divide the loss by batch_size; this is equivalent
-    #        to reduction='mean' in PyTorch's nn.CrossEntropyLoss
-
     e_x = predicted.exp()
     log_e_x = e_x.log()
     a = log_sum_x_trick(predicted)
@@ -379,14 +372,11 @@ class Conv1d(Function):
         if not (type(x).__name__ == 'Tensor' and type(weight).__name__ == 'Tensor' and type(bias).__name__ == 'Tensor'):
             raise Exception("All args must be Tensors: {},{}, {}".format(
                 type(x).__name__, type(weight).__name__), type(bias).__name__)
-        # TODO: Save relevant variables for backward pass
         ctx.save_for_backward(x, weight, bias)
         ctx.stride = stride
-        # TODO: Get output size by finishing & calling get_conv1d_output_size()
         output_size = get_conv1d_output_size(input_size, kernel_size, stride)
         ctx.output_size = output_size
         requires_grad = x.requires_grad or weight.requires_grad or bias.requires_grad
-        # TODO: Initialize output with correct size
         out = np.zeros((batch_size, out_channel, output_size))
 
         for i in range(batch_size):
@@ -397,17 +387,13 @@ class Conv1d(Function):
                                              * weight.data[j]) + bias.data[j]
                     curr += 1
 
-        # TODO: Calculate the Conv1d output.
-        # Remember that we're working with np.arrays; no new operations needed.
         out = tensor.Tensor(out, requires_grad=requires_grad,
                             is_leaf=not requires_grad)
 
-        # TODO: Put output into tensor with correct settings and return
         return out
 
     @staticmethod
     def backward(ctx, grad_output):
-        # TODO: Finish Conv1d backward pass. It's surprisingly similar to the forward pass.
         x, weight, bias = ctx.saved_tensors
         stride = ctx.stride
         output_size = ctx.output_size
@@ -469,7 +455,6 @@ def get_conv1d_output_size(input_size, kernel_size, stride):
     Returns:
         int: size of the output as an int (not a Tensor or np.array)
     """
-    # TODO: implement the formula in the writeup. One-liner; don't overthink
     return ((input_size - kernel_size)//stride) + 1
 
 
