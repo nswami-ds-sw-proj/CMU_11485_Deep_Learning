@@ -38,5 +38,4 @@ class CrossEntropyLoss(Loss):
             Tensor: loss, stored as a float in a tensor 
         """
         # Simply calls nn.functional.cross_entropy
-        # If you implement your own Function subclass you may need to modify this
         return F.cross_entropy(predicted, target)
