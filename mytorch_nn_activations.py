@@ -28,10 +28,8 @@ class ReLU(Module):
             Tensor: input after ReLU
         """
 
-        # Complete ReLU(Function) class in functional.py and call it appropriately here
         return F.ReLU.apply(x)
 
-# You can define more activation functions below (after hw1p1)
 
 
 class Tanh(Module):
