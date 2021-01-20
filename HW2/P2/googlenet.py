@@ -250,29 +250,29 @@ dev_loader = DataLoader(val_data, batch_size = 64, shuffle=True, num_workers=8) 
 test_loader = DataLoader(test_data, batch_size = 64, shuffle=True, num_workers=8) if DEVICE=='cuda' else DataLoader(test_data, shuffle=True, batch_size=64)
 
 
-# learningRate = .15
-# weightDecay = 5e-5
+learningRate = .15
+weightDecay = 5e-5
 num_classes = len(train_data.classes)
 
-# criterion = CrossEntropyLoss()
+criterion = CrossEntropyLoss()
 
 
 
 
 model = Network(num_classes)
-# model.apply(init_weights)
+model.apply(init_weights)
 model.to(DEVICE)
 
-# optimizer = SGD(model.parameters(), lr=learningRate, weight_decay=weightDecay, momentum=0.9, nesterov=True)
+optimizer = SGD(model.parameters(), lr=learningRate, weight_decay=weightDecay, momentum=0.9, nesterov=True)
 
-# schedu ler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer,factor=0.15, min_lr=1e-6, patience=1, verbose=True)
+scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer,factor=0.15, min_lr=1e-6, patience=1, verbose=True)
 
-# train(model, train_loader, optimizer, criterion, dev_loader, DEVICE, test_loader, scheduler)
+train(model, train_loader, optimizer, criterion, dev_loader, DEVICE, test_loader, scheduler)
 
 img_list, label_list, class_n = parse_data('verification_data')
 
-checkpoint = torch.load('checkpoint_epoch14.pth')
-model.load_state_dict(checkpoint['model'])
+# checkpoint = torch.load('checkpoint_epoch14.pth')
+# model.load_state_dict(checkpoint['model'])
 model.to('cuda')
 a_list = []
 b_list = []
