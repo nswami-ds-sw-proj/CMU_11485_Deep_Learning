@@ -7,9 +7,7 @@ from mytorch.nn.linear import Linear
 from mytorch.nn.batchnorm import BatchNorm1d
 from mytorch.nn.sequential import Sequential
 from mytorch.nn.activations import ReLU
-# TODO: Import any mytorch packages you need (XELoss, SGD, etc)
 
-# NOTE: Batch size pre-set to 100. Shouldn't need to change.
 BATCH_SIZE = 100
 
 
