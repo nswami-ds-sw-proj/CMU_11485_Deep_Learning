@@ -4,7 +4,7 @@
 
 # Part 1
 
-In this section, I implemented Multi-Layer Perceptron (MLP) linear layers, activations, loss functions and basic optimization techniques in Mytorch.
+In this section, I implemented Multi-Layer Perceptron (MLP) linear layers, activations, loss functions and basic optimization techniques in my own version of Pytorch, including engineering an auto-differentiation engine similar to that used by Pytorch during backpropagation. 
 
 
 # Part 2
