@@ -14,11 +14,8 @@ def train(model, train_loader, criterion, optimizer, epoch):
     model.to(DEVICE)
     start = time.time()
 
-    # 1) Iterate through your loader
     for batchnum, (speech, text, speech_lens) in enumerate(train_loader):
-        # 2) Use torch.autograd.set_detect_anomaly(True) to get notices about gradient explosion
         optimizer.zero_grad()
-        # 3) Set the inputs to the device.
         speech = speech.to(DEVICE)
         text = text.to(DEVICE)
         speech_lens = speech_lens.to(DEVICE)
@@ -33,34 +30,18 @@ def train(model, train_loader, criterion, optimizer, epoch):
         outputs = outputs.permute(0, 2, 1)
         loss = criterion(outputs, text)
         
-        # 8) Use the mask to calculate a masked loss. 
-
-        # 9) Run the backward pass on the masked loss. 
         loss.backward()
-        # 10) Use torch.nn.utils.clip_grad_norm(model.parameters(), 2)
-        # torch.nn.utils.clip_grad_norm_(model.parameters(), 5)
-        # 11) Take a step with your optimizer
         
         optimizer.step()
-        # 12) Normalize the masked loss
 
-        # 13) Optionally print the training loss after every N batches
         
         if (batchnum % 100)==0:
             print(batchnum, loss.item())
-        #     util.plot_attn_flow(attention[:, -1].detach().cpu().numpy(), 'attn_epoch_%d_%d.jpeg' % (epoch, batchnum))
-        # print(batchnum, loss.item())
+            util.plot_attn_flow(attention[:, -1].detach().cpu().numpy(), 'attn_epoch_%d_%d.jpeg' % (epoch, batchnum))
         
     if (epoch > 20 and epoch % 5 == 0):
         checkpoint = {'model': model.state_dict(), 'optimizer': optimizer.state_dict(), 'epoch': epoch, "criterion": criterion}
         torch.save(checkpoint, 'checkpoint_%d.pth' %(epoch))
-        save_check = torch.load('checkpoint_%d.pth' % (epoch))
-        assert('model' in save_check)
-        assert('optimizer' in save_check)
-        assert('epoch' in save_check)
-        assert('criterion' in save_check)
-        print("WORKS")
-        
 
     end = time.time()
 
@@ -69,8 +50,6 @@ def val(model, val_loader, epoch):
 
     model.to(DEVICE)
     with torch.no_grad():
-        # output_pred = []
-        # text_translation = []
         distances = []
         print(len(val_loader))
         for batch_num, (speech, text, speech_lens) in enumerate(val_loader):
@@ -93,7 +72,6 @@ def val(model, val_loader, epoch):
                     sentence1 += letter
                 else:
                     break
-            # output_pred.append(sentence1)
             
             sentence2 = ''
             for idx in text:
@@ -102,18 +80,9 @@ def val(model, val_loader, epoch):
                     sentence2 += letter
                 else:
                     break
-            # text_translation.append(sentence2)
             distances.append(Levenshtein.distance(sentence1, sentence2))
-            # assert(len(output_pred) > batch_num)
-            if batch_num<6:
                 
-                print("Model Output")
-                print(sentence1)
-                print("TEXT LABEL")
-                print(sentence2)
-
             
-        # assert(len(text_translation)==len(output_pred) and len(text_translation)==len(val_loader))
 
     print("AVG VAL DISTANCE = %d, EPOCH %d" % (np.mean(distances), epoch))
 
