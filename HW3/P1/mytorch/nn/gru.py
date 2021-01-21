@@ -54,9 +54,6 @@ class GRUUnit(Module):
             Tensor: (effective_batch_size,hidden_size)
         '''
 
-        # TODO: INSTRUCTIONS
-        # Perform matrix operations to construct the intermediary value from input and hidden tensors
-        # Remeber to handle the case when hidden = None. Construct a tensor of appropriate size, filled with 0s to use as the hidden.
         if hidden==None:
              
             hidden = Tensor(np.zeros((input.shape[0], self.hidden_size)))
