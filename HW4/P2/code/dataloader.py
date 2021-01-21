@@ -42,8 +42,6 @@ def transform_letter_to_index(transcript, letter2index):
         for char in sentence:
             sentence_char_labels.append(letter2index[char])
         sentence_char_labels.append(letter2index['<eos>'])
-        # print(len(sentence_char_labels))
-        # sentence_char_labels.insert(0, letter2index['<sos>'])
         char_labels.append(sentence_char_labels)
     return char_labels
 
