@@ -20,13 +20,10 @@ def train(model, train_loader, criterion, optimizer, epoch):
         text = text.to(DEVICE)
         speech_lens = speech_lens.to(DEVICE)
 
-        # 4) Pass your inputs, and length of speech into the model.
         if batchnum%100==0:
             outputs = model(speech, text, speech_lens, epoch, batch_num=batchnum, plot=True, isTrain=True)
         else:
             outputs = model(speech, text, speech_lens, epoch, batch_num=None, plot=False, isTrain=True)
-        # outputs = outputs.permute(1,0,2) # To give batch_first
-        # 7) Use the criterion to get the loss.
         outputs = outputs.permute(0, 2, 1)
         loss = criterion(outputs, text)
         
