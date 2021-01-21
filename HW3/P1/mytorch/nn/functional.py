@@ -469,7 +469,6 @@ def get_conv1d_output_size(input_size, kernel_size, stride):
     Returns:
         int: size of the output as an int (not a Tensor or np.array)
     """
-    # TODO: implement the formula in the writeup. One-liner; don't overthink
     return ((input_size - kernel_size)//stride) + 1
 
 class Pow(Function):
