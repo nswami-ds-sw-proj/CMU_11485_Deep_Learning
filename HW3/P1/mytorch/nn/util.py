@@ -44,12 +44,6 @@ def pack_sequence(sequence):
         PackedSequence: data attribute of the result is of shape ( total number of timesteps (sum) across all samples in the batch, # features )
     '''
     
-    # TODO: INSTRUCTIONS
-    # Find the sorted indices based on number of time steps in each sample
-    # Extract slices from each sample and properly order them for the construction of the packed tensor. __getitem__ you defined for Tensor class will come in handy
-    # Use the tensor.cat function to create a single tensor from the re-ordered segements
-    # Finally construct the PackedSequence object
-    # REMEMBER: All operations here should be able to construct a valid autograd graph.
     lengths = set()
     indexes = []
     
@@ -103,23 +97,14 @@ def unpack_sequence(ps):
         list of Tensors
     '''
     
-    # TODO: INSTRUCTIONS
-    # This operation is just the reverse operation of pack_sequences
-    # Use the ps.batch_size to determine number of time steps in each tensor of the original list (assuming the tensors were sorted in a descending fashion based on number of timesteps)
-    # Construct these individual tensors using tensor.cat
-    # Re-arrange this list of tensor based on ps.sorted_indices
     data = ps.data
-    # print(data)
     sorted_indices = ps.sorted_indices
     batch_sizes = ps.batch_sizes
-    # print(sorted_indices)
     arr_tensors = [[] for _ in range(len(sorted_indices))]
     i = 0
     count = 0
     while i < len(data):
         for j in range(batch_sizes[count]):
-            # print("DATA INDEX", i+j)
-            # print("EXAMPLE REFERENCING", j)
             arr_tensors[j].append(data[i+j].unsqueeze(0))
 
         i += batch_sizes[count]
@@ -127,9 +112,6 @@ def unpack_sequence(ps):
     for i in range(len(arr_tensors)): arr_tensors[i] = tensor.cat(arr_tensors[i], dim=0)
 
     result = [None for i in range(len(sorted_indices))]
-    # print(len(arr_tensors))
-    # print(arr_tensors,"NEWSEQW")
     for i in range(len(sorted_indices)): result[i] = arr_tensors[list(sorted_indices).index(i)]
-    # print(result)
     return result
 
