@@ -58,16 +58,10 @@ class pBLSTM(nn.Module):
         x = self.dropout(x, 0.2)
         half_len = x.size(0) // 2
         feats = x.size(2) * 2
-        ## NEED TO VET THIS THROUGH
-        # print(x.shape)
         x_new = x[:(2*half_len), :, :]
-        # print(x_new.shape)
         x_new = x_new.permute(1,0,2)
-        # print(x_new.shape)
         x_new = x_new.reshape(x.shape[1], half_len, feats)
-        # print(x_new.shape)
         x_new = x_new.permute(1,0,2)
-        # print(x_new.shape)
         lens //= 2 
 
         x_new = utils.rnn.pack_padded_sequence(x_new, lens, enforce_sorted=False)
@@ -83,11 +77,9 @@ class Encoder(nn.Module):
         super(Encoder, self).__init__()
         self.lstm = nn.LSTM(input_size=input_dim, hidden_size=hidden_dim, num_layers=1, bidirectional=True)
         
-        ### Add code to define the blocks of pBLSTMs! ###
         self.pBLSTM1 = pBLSTM(hidden_dim*4, hidden_dim)
         self.pBLSTM2 = pBLSTM(hidden_dim*4, hidden_dim)
         self.pBLSTM3 = pBLSTM(hidden_dim*4, hidden_dim)
-        # NEED TO ADD DROPOUT
         self.dropout = LockedDropout()
         self.key_network = nn.Linear(hidden_dim*2, value_size)
         self.value_network = nn.Linear(hidden_dim*2, key_size)
@@ -96,11 +88,9 @@ class Encoder(nn.Module):
         rnn_inp = utils.rnn.pack_padded_sequence(x, lengths=lens, batch_first=False, enforce_sorted=False)
         outputs, _ = self.lstm(rnn_inp)
 
-        ### Use the outputs and pass it through the pBLSTM blocks! ###
         outputs, lens = self.pBLSTM1(outputs)
         outputs, lens = self.pBLSTM2(outputs)
         outputs, lens = self.pBLSTM3(outputs)
-        # NEED TO ADD DROPOUT
         linear_input, lens = utils.rnn.pad_packed_sequence(outputs)
         linear_input = self.dropout(linear_input, 0.2)
         keys = self.key_network(linear_input)
@@ -165,13 +155,8 @@ class Decoder(nn.Module):
             tf = 0.6
         if not self.training:
             tf = 1
-        #CHANGE UP LATER
         print("TF = %f" % tf)
         for i in range(max_len):
-            # * Implement Gumble noise and teacher forcing techniques 
-            # * When attention is True, replace values[i,:,:] with the context you get from attention.
-            # * If you haven't implemented attention yet, then you may want to check the index and break 
-            #   out of the loop so you do not get index out of range errors. 
             
             if i==0:
                 char_embed  = self.embedding(prediction)
@@ -225,6 +210,7 @@ class Seq2Seq(nn.Module):
         else:
             predictions = self.decoder(key, value, lens, epoch=epoch, batch_num=batch_num, plot=plot,isTrain=False)
         return predictions
+ # Taken from salesforce Repo (https://github.com/salesforce/awd-lstm-lm)
 class LockedDropout(nn.Module):
     def __init__(self):
         super().__init__()
